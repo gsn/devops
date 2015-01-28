@@ -35,7 +35,7 @@ defaults
   mode                    http                  #Set http as default protocol
   log                     global                #Global logging
   option                  httplog               #With the HTTP log records
-  option                  dontlognull           #Don't empty log record
+  option                  dontlognull           #Dont empty log record
   option http-server-close     
   option abortonclose    
   option forwardfor       except 127.0.0.0/8    #From these information are not forwardfor
