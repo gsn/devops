@@ -46,7 +46,7 @@ def main(args):
     instancesByIndex = {}
     groupId = 0
     for security_group in args.security_group:
-        groupId++
+        groupId += 1
         logging.info('Getting instances for %s.' % security_group)
         instances[security_group] = get_running_instances(access_key=args.access_key,
                                                           secret_key=args.secret_key,
