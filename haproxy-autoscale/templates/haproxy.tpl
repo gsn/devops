@@ -80,16 +80,25 @@ frontend http-in
   bind        *:80
   reqadd      X-Forwarded-Proto:\ http
   
-  #stick-table type ip size 1m expire 1m store gpc0,http_req_rate(10s),http_err_rate(10s)
-  #tcp-request connection track-sc1 src
-  #tcp-request connection reject if { src_get_gpc0 gt 0 }
-  #http-request deny if { src_get_gpc0 gt 0 }
+  # Use General Purpose Couter (gpc) 0 in SC1 as a global abuse counter
+  # Monitors the number of request sent by an IP over a period of 10 seconds
+  stick-table type ip size 1m expire 10s store gpc0,http_req_rate(10s),http_err_rate(10s)
   
-  #acl abuse src_http_req_rate(incoming) ge 700
-  #acl flag_abuser src_inc_gpc0(incoming)
-  #tcp-request content reject if abuse flag_abuser
-  #http-request deny if abuse flag_abuser
+  # Allow clean known IPs to bypass the filter, remember to add CDN ips (maxcdn)
+  tcp-request connection accept if { src -f /etc/haproxy/whitelist.lst }
+  
+  # Shut the new connection as long as the client has already 200 opened
+  # 200 is a generous number to support corporate browsing scenario
+  tcp-request connection track-sc1 src
+  tcp-request connection reject if { src_get_gpc0 gt 200 }
 
+  # If the source IP sent 2000 or more http request over the defined period,
+  # flag the IP as abuser on the frontend
+  # acl abuse src_http_req_rate(ft_web) ge 2000
+  # acl flag_abuser src_inc_gpc0(ft_web)
+  # tcp-request content reject if abuse flag_abuser
+  # http-request deny if abuse flag_abuser
+  
   # define wp-admin url acl
   acl url_wp_admin1 hdr_end(host) -i gsn2.com
   acl url_wp_admin2 hdr_end(host) -i gsngrocers.com
@@ -104,6 +113,7 @@ frontend http-in
 # static backend for serving up admin, images, stylesheets and such
 #---------------------------------------------------------------------
 backend wp-admin
+  
   server wp-instance-admin 127.0.0.1:8000 maxconn 200 check
 
 #---------------------------------------------------------------------
