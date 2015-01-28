@@ -82,15 +82,15 @@ frontend http-in
   
   # Use General Purpose Couter (gpc) 0 in SC1 as a global abuse counter
   # Monitors the number of request sent by an IP over a period of 10 seconds
-  stick-table type ip size 1m expire 10s store gpc0,http_req_rate(10s),http_err_rate(10s)
+  # stick-table type ip size 1m expire 10s store gpc0,http_req_rate(10s),http_err_rate(10s)
   
   # Allow clean known IPs to bypass the filter, remember to add CDN ips (maxcdn)
-  tcp-request connection accept if { src -f /etc/haproxy/whitelist.lst }
+  # tcp-request connection accept if { src -f /etc/haproxy/whitelist.lst }
   
   # Shut the new connection as long as the client has already 200 opened
   # 200 is a generous number to support corporate browsing scenario
-  tcp-request connection track-sc1 src
-  tcp-request connection reject if { src_get_gpc0 gt 200 }
+  # tcp-request connection track-sc1 src
+  # tcp-request connection reject if { src_get_gpc0 gt 200 }
 
   # If the source IP sent 2000 or more http request over the defined period,
   # flag the IP as abuser on the frontend
