@@ -59,7 +59,7 @@ defaults
   
   # enable compression (haproxy v1.5-dev13 and above required)
   #compression algo gzip
-  compression type text/html application/javascript text/css application/x-javascript text/javascript
+  #compression type text/html application/javascript text/css application/x-javascript text/javascript
 
 #---------------------------------------------------------------------
 # enable stats service
