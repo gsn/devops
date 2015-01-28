@@ -16,7 +16,7 @@ global   #The global configuration file
 
   chroot      /var/lib/haproxy        #Change the haproxy working directory.
   pidfile     /var/run/haproxy.pid    #Specifies the path to the PID file
-  maxconn     100000                  #Attempt to hit 100K req/s
+  maxconn     4000                    #This is not the same as request/s
   user        haproxy                 #The specified operation service users
   group       haproxy                 #The user specified set of operation service
   daemon
@@ -35,7 +35,7 @@ defaults
   mode                    http                  #Set http as default protocol
   log                     global                #Global logging
   option                  httplog               #With the HTTP log records
-  option                  dontlognull           #Don't empty log record
+  option                  dontlognull           #Dont empty log record
   option http-server-close     
   option abortonclose    
   option forwardfor       except 127.0.0.0/8    #From these information are not forwardfor
@@ -48,7 +48,6 @@ defaults
   timeout server          1m                    #The default server timeout
   timeout http-keep-alive 10s                   #Default persistence connection timeout
   timeout check           10s                   #The default check interval
-  maxconn                 100000                #Attempt to hit 100K req/s
 
   errorfile  400 /etc/haproxy/errors/400.http
   errorfile  403 /etc/haproxy/errors/403.http
@@ -81,16 +80,25 @@ frontend http-in
   bind        *:80
   reqadd      X-Forwarded-Proto:\ http
   
-  #stick-table type ip size 1m expire 1m store gpc0,http_req_rate(10s),http_err_rate(10s)
-  #tcp-request connection track-sc1 src
-  #tcp-request connection reject if { src_get_gpc0 gt 0 }
-  #http-request deny if { src_get_gpc0 gt 0 }
+  # Use General Purpose Couter (gpc) 0 in SC1 as a global abuse counter
+  # Monitors the number of request sent by an IP over a period of 10 seconds
+  # stick-table type ip size 1m expire 10s store gpc0,http_req_rate(10s),http_err_rate(10s)
   
-  #acl abuse src_http_req_rate(incoming) ge 700
-  #acl flag_abuser src_inc_gpc0(incoming)
-  #tcp-request content reject if abuse flag_abuser
-  #http-request deny if abuse flag_abuser
+  # Allow clean known IPs to bypass the filter, remember to add CDN ips (maxcdn)
+  # tcp-request connection accept if { src -f /etc/haproxy/whitelist.lst }
+  
+  # Shut the new connection as long as the client has already 200 opened
+  # 200 is a generous number to support corporate browsing scenario
+  # tcp-request connection track-sc1 src
+  # tcp-request connection reject if { src_get_gpc0 gt 200 }
 
+  # If the source IP sent 2000 or more http request over the defined period,
+  # flag the IP as abuser on the frontend
+  # acl abuse src_http_req_rate(ft_web) ge 2000
+  # acl flag_abuser src_inc_gpc0(ft_web)
+  # tcp-request content reject if abuse flag_abuser
+  # http-request deny if abuse flag_abuser
+  
   # define wp-admin url acl
   acl url_wp_admin1 hdr_end(host) -i gsn2.com
   acl url_wp_admin2 hdr_end(host) -i gsngrocers.com
@@ -105,14 +113,15 @@ frontend http-in
 # static backend for serving up admin, images, stylesheets and such
 #---------------------------------------------------------------------
 backend wp-admin
-  server wp-instance-admin 127.0.0.1:8000 check
+  
+  server wp-instance-admin 127.0.0.1:8000 maxconn 200 check
 
 #---------------------------------------------------------------------
 # round robin balancing between the various worker backends
 #---------------------------------------------------------------------
 backend wp-workers
   balance roundrobin
-  cookie  SERVERID insert indirect
+  # cookie  SERVERID insert indirect
   % for instance in instances['security-group-1']:
   server ${ instance.id } ${ instance.private_dns_name }
   % endfor
