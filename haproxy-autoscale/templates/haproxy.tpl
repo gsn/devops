@@ -16,7 +16,7 @@ global   #The global configuration file
 
   chroot      /var/lib/haproxy        #Change the haproxy working directory.
   pidfile     /var/run/haproxy.pid    #Specifies the path to the PID file
-  maxconn     4000
+  maxconn     4000                    #This is not the same as request/s
   user        haproxy                 #The specified operation service users
   group       haproxy                 #The user specified set of operation service
   daemon
@@ -48,7 +48,6 @@ defaults
   timeout server          1m                    #The default server timeout
   timeout http-keep-alive 10s                   #Default persistence connection timeout
   timeout check           10s                   #The default check interval
-  maxconn                 4000
 
   errorfile  400 /etc/haproxy/errors/400.http
   errorfile  403 /etc/haproxy/errors/403.http
