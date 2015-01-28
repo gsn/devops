@@ -68,9 +68,9 @@ listen stats :1988
   stats enable
   #stats hide-version
   stats refresh 2s
-  stats show-desc 
+  #stats show-desc 
   stats show-legends                        
-  stats show-node                           
+  #stats show-node                           
   stats show-legends
   #stats scope .
   stats realm Haproxy\ Statistics
