@@ -105,6 +105,7 @@ frontend http-in
 # static backend for serving up admin, images, stylesheets and such
 #---------------------------------------------------------------------
 backend wp-admin
+  maxconn                 200                 #restrict admin for better performance
   server wp-instance-admin 127.0.0.1:8000 check
 
 #---------------------------------------------------------------------
