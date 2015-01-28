@@ -72,7 +72,7 @@ listen stats :1988
   stats show-legends                        
   stats show-node                           
   stats show-legends
-  stats scope .
+  #stats scope .
   stats realm Haproxy\ Statistics
   stats uri /
   stats auth showme:showme # should disable port after viewing stat
