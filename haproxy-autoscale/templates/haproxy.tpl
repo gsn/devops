@@ -106,7 +106,7 @@ frontend http-in
   acl url_wp_admin4 path_beg -i /wp-admin
   acl url_wp_admin5 path_beg -i /wp-login
   
-  use_backend wp-admin if url_static url_wp_admin1 url_wp_admin2 url_wp_admin3 url_wp_admin4 url_wp_admin5 
+  use_backend wp-admin if url_wp_admin1 url_wp_admin2 url_wp_admin3 url_wp_admin4 url_wp_admin5 
   default_backend wp-workers
     
 #---------------------------------------------------------------------
