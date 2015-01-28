@@ -50,13 +50,13 @@ defaults
   timeout check           10s                   #The default check interval
   maxconn                 100000                #Attempt to hit 100K req/s
 
-	errorfile  400 /etc/haproxy/errors/400.http
-	errorfile  403 /etc/haproxy/errors/403.http
-	errorfile  408 /etc/haproxy/errors/408.http
-	errorfile  500 /etc/haproxy/errors/500.http
-	errorfile  502 /etc/haproxy/errors/502.http
-	errorfile  503 /etc/haproxy/errors/503.http
-	errorfile  504 /etc/haproxy/errors/504.http
+  errorfile  400 /etc/haproxy/errors/400.http
+  errorfile  403 /etc/haproxy/errors/403.http
+  errorfile  408 /etc/haproxy/errors/408.http
+  errorfile  500 /etc/haproxy/errors/500.http
+  errorfile  502 /etc/haproxy/errors/502.http
+  errorfile  503 /etc/haproxy/errors/503.http
+  errorfile  504 /etc/haproxy/errors/504.http
   
   # enable compression (haproxy v1.5-dev13 and above required)
   compression algo gzip
@@ -98,14 +98,14 @@ frontend http-in
   acl url_wp_admin4 path_beg -i /wp-admin
   acl url_wp_admin5 path_beg -i /wp-login
   
-	use_backend wp-admin if url_static url_wp_admin1 url_wp_admin2 url_wp_admin3 url_wp_admin4 url_wp_admin5 
-	default_backend wp-workers
+  use_backend wp-admin if url_static url_wp_admin1 url_wp_admin2 url_wp_admin3 url_wp_admin4 url_wp_admin5 
+  default_backend wp-workers
     
 #---------------------------------------------------------------------
 # static backend for serving up admin, images, stylesheets and such
 #---------------------------------------------------------------------
 backend wp-admin
-	server wp-instance-admin 127.0.0.1:8000 check
+  server wp-instance-admin 127.0.0.1:8000 check
 
 #---------------------------------------------------------------------
 # round robin balancing between the various worker backends
@@ -116,5 +116,4 @@ backend wp-workers
   % for instance in instances['security-group-1']:
   server ${ instance.id } ${ instance.private_dns_name }
   % endfor
-
-
+  
