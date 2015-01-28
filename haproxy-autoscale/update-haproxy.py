@@ -43,17 +43,22 @@ def parse_args():
 def main(args):    
     # Fetch a list of all the instances in these security groups.
     instances = {}
+    instancesByIndex = {}
+    groupId = 0;
     for security_group in args.security_group:
+        groupId++;
         logging.info('Getting instances for %s.' % security_group)
         instances[security_group] = get_running_instances(access_key=args.access_key,
                                                           secret_key=args.secret_key,
                                                           security_group=security_group,
                                                           region=args.region)
-
+                                                          
+    instancesByIndex['security-group-' + str(groupId)] = instances[security_group];
+    
     # Generate the new config from the template.
     logging.info('Generating configuration for haproxy.')
     new_configuration = generate_haproxy_config(template=args.template,
-                                                instances=instances)
+                                                instances=instancesByIndex)
     
     # See if this new config is different. If it is then restart using it.
     # Otherwise just delete the temporary file and do nothing.
@@ -67,7 +72,7 @@ def main(args):
         logging.info('Writing new configuration.')
         file_contents(filename=args.output,
                       content=generate_haproxy_config(template=args.template,
-                                                      instances=instances    ))
+                                                      instances=instancesByIndex    ))
         
         restart_haproxy(args)
         
