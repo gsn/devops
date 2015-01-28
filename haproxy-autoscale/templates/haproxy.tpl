@@ -16,7 +16,7 @@ global   #The global configuration file
 
   chroot      /var/lib/haproxy        #Change the haproxy working directory.
   pidfile     /var/run/haproxy.pid    #Specifies the path to the PID file
-  maxconn     100000                  #Attempt to hit 100K req/s
+  maxconn     4000
   user        haproxy                 #The specified operation service users
   group       haproxy                 #The user specified set of operation service
   daemon
@@ -48,7 +48,7 @@ defaults
   timeout server          1m                    #The default server timeout
   timeout http-keep-alive 10s                   #Default persistence connection timeout
   timeout check           10s                   #The default check interval
-  maxconn                 100000                #Attempt to hit 100K req/s
+  maxconn                 4000
 
   errorfile  400 /etc/haproxy/errors/400.http
   errorfile  403 /etc/haproxy/errors/403.http
@@ -105,15 +105,14 @@ frontend http-in
 # static backend for serving up admin, images, stylesheets and such
 #---------------------------------------------------------------------
 backend wp-admin
-  maxconn                 200                 #restrict admin for better performance
-  server wp-instance-admin 127.0.0.1:8000 check
+  server wp-instance-admin 127.0.0.1:8000 maxconn 200 check
 
 #---------------------------------------------------------------------
 # round robin balancing between the various worker backends
 #---------------------------------------------------------------------
 backend wp-workers
   balance roundrobin
-  cookie  SERVERID insert indirect
+  # cookie  SERVERID insert indirect
   % for instance in instances['security-group-1']:
   server ${ instance.id } ${ instance.private_dns_name }
   % endfor
