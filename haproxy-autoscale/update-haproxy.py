@@ -44,16 +44,16 @@ def main(args):
     # Fetch a list of all the instances in these security groups.
     instances = {}
     instancesByIndex = {}
-    groupId = 0;
+    groupId = 0
     for security_group in args.security_group:
-        groupId++;
+        groupId += 1
         logging.info('Getting instances for %s.' % security_group)
         instances[security_group] = get_running_instances(access_key=args.access_key,
                                                           secret_key=args.secret_key,
                                                           security_group=security_group,
                                                           region=args.region)
                                                           
-    instancesByIndex['security-group-' + str(groupId)] = instances[security_group];
+    instancesByIndex['security-group-' + str(groupId)] = instances[security_group]
     
     # Generate the new config from the template.
     logging.info('Generating configuration for haproxy.')

@@ -58,17 +58,21 @@ defaults
   errorfile  504 /etc/haproxy/errors/504.http
   
   # enable compression (haproxy v1.5-dev13 and above required)
-  compression algo gzip
-  compression type text/html application/javascript text/css application/x-javascript text/javascript
+  #compression algo gzip
+  #compression type text/html application/javascript text/css application/x-javascript text/javascript
 
 #---------------------------------------------------------------------
 # enable stats service
 #---------------------------------------------------------------------
 listen stats :1988
   stats enable
-  stats hide-version
+  #stats hide-version
+  stats refresh 2s
+  stats show-desc 
+  stats show-legends                        
+  stats show-node                           
   stats show-legends
-  stats scope .
+  #stats scope .
   stats realm Haproxy\ Statistics
   stats uri /
   stats auth showme:showme # should disable port after viewing stat
@@ -106,7 +110,7 @@ frontend http-in
   acl url_wp_admin4 path_beg -i /wp-admin
   acl url_wp_admin5 path_beg -i /wp-login
   
-  use_backend wp-admin if url_static url_wp_admin1 url_wp_admin2 url_wp_admin3 url_wp_admin4 url_wp_admin5 
+  use_backend wp-admin if url_wp_admin1 url_wp_admin2 url_wp_admin3 url_wp_admin4 url_wp_admin5 
   default_backend wp-workers
     
 #---------------------------------------------------------------------
