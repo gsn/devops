@@ -1,55 +1,13 @@
-#AWS GSN WP Setup v1.0.0
+Wordpress Setup
+==================
+To support GSN requirement, this is a modified version of Easy Engine: https://github.com/rtCamp/easyengine
 
-##admin instance
-git clone https://github.com/cannontech/wp-server-setup.git
+#Intro
+Easy Engine is a flexible boilerplate for supporting single server WordPress.  GSN PaaS required that we only use a subset of this features; therefore, this code was simplified to have the following function/configurations:
 
-get pem file, put in /wp-server-setup
-
-edit template (gsn-aws-template.js), find rdswordpress, fill in DBName and MasterUserPassword
-
-log into aws
-
-select n.california for region
-
-run template (<git folder>/wp-server-setup/gsn-aws-template.js in services/cloudformation)
-
-ssh into admin box (select instance and click connect - change n.california to ncalifornia)
-
-sudo apt-get update
-
-sudo apt-get install git
-
-sudo git clone https://github.com/cannontech/wp-server-setup.git
-
-cd wp-server-setup
-
-sudo chmod +x *.sh
-
-sudo ./gsn-server-setup.sh
-
-sudo ./admin.sh
-
-logout of ssh
-
-*configure wp*
-browse to admin IP
-fill in form
-
-##worker instance
-ssh into worker box
-
-sudo apt-get update
-
-sudo apt-get install git
-
-sudo git clone https://github.com/cannontech/wp-server-setup.git
-
-cd wp-server-setup
-
-sudo chmod +x *.sh
-
-sudo ./gsn-server-setup.sh
-
-sudo ./worker.sh
-
-logout ssh
+- Multi-site with sub-domain
+- W3tc total cache plug-in optimize
+- Stripped down EasyEngine administrative UI
+- Single WordPress Administrative server
+- Clustered Worker servers
+- Run on Amazon AWS
