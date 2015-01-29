@@ -110,7 +110,7 @@ frontend http-in
   acl url_wp_admin4 path_beg -i /wp-admin
   acl url_wp_admin5 path_beg -i /wp-login
   
-  #use_backend wp-admin if url_wp_admin1 or url_wp_admin2 or url_wp_admin3 or url_wp_admin4 or url_wp_admin5 
+  use_backend wp-admin if url_wp_admin1 or url_wp_admin2 or url_wp_admin3 or url_wp_admin4 or url_wp_admin5 
   default_backend wp-workers
     
 #---------------------------------------------------------------------
@@ -127,6 +127,6 @@ backend wp-workers
   balance roundrobin
   # cookie  SERVERID insert indirect
   % for instance in instances['security-group-1']:
-  server ${ instance.id } ${ instance.private_dns_name }
+  server ${ instance.id } ${ instance.private_dns_name }:80 maxconn 120 check
   % endfor
   
