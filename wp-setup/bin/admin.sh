@@ -1,6 +1,7 @@
 #!/bin/bash
-#GSN WP Host (admin) Setup
-#Version 1.0.0
+
+# execute in home directory
+mkdir ~/gsn-git
 
 echo "************ nfs requirements"
 apt-get install nfs-kernel-server
@@ -15,43 +16,36 @@ echo "************ mount the attached ebs to /wordpress"
 mount /dev/xvdf /mnt/sharefs
 
 mkdir /mnt/sharefs/wordpress
-mkdir /mnt/sharefs/gsn-repo
+mkdir /mnt/sharefs/wordpress/htdocs
+mkdir /mnt/sharefs/admin
+mkdir /mnt/sharefs/admin/htdocs
 
-echo "************ change the ownership of the wordpress folder"
-chown www-data:www-data /mnt/sharefs/wordpress
-chown www-data:www-data /mnt/sharefs/gsn-repo
+echo "************ give permission to access the drive to the worker(s)"
+echo "\n/mnt/sharefs 10.0.0.0/16(rw,sync,no_subtree_check)" >> /etc/exports
 
-echo "************ increase permissions"
-find /mnt/sharefs/wordpress/ -type d -exec chmod 755 {} \;
-find /mnt/sharefs/wordpress/ -type f -exec chmod 644 {} \;
-chmod 777 /mnt/sharefs/wordpress
-
-echo "************ give permission to access the drive to the worker(s) -fails??"
-echo "" &> /etc/exports
-echo "/mnt/sharefs 10.0.0.0/16(rw,sync,no_subtree_check)" >> /etc/exports
-
-service nfs-kernel-server start
-
-echo "************ change the nginx doc root to the shared filesystem"
-sed -i -e "s/\/usr\/share\/nginx\/html/\/mnt\/sharefs\/wordpress/g" /etc/nginx/sites-available/default
-
-echo "************ add index.php to the list of possibles"
-sed -i -e "s/index.html index.htm/index.php/g" /etc/nginx/sites-available/default
-
-echo "************ add php section"
-sed -i -e "s/# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000/location ~ \\\.php$ {fastcgi_split_path_info ^(.+\\\.php)(\/.+)$;fastcgi_pass unix:\/var\/run\/php5-fpm.sock;fastcgi_index index.php;include fastcgi_params;}/g" /etc/nginx/sites-available/default
+service nfs-kernel-server restart
 
 echo "************ clone the gsn wp repo"
-git clone --recursive https://github.com/cannontech/wp-skeleton.git /mnt/sharefs/gsn-repo/repo
+git clone --recursive https://github.com/gsn/wp-multisite-skeleton.git ~/gsn-git/wp-multisite-skeleton
 
 echo "************ move the wordpress files"
-mv /mnt/sharefs/gsn-repo/repo/wp/* /mnt/sharefs/wordpress
-mv /mnt/sharefs/gsn-repo/repo/content/themes/* /mnt/sharefs/wordpress/wp-content/themes
-mv /mnt/sharefs/gsn-repo/repo/content/plugins/* /mnt/sharefs/wordpress/wp-content/plugins
+mv ~/gsn-git/wp-multisite-skeleton/wp/* /mnt/sharefs/wordpress/htdocs
+mv ~/gsn-git/wp-multisite-skeleton/content/themes/* /mnt/sharefs/wordpress/htdocs/wp-content/themes
+mv ~/gsn-git/wp-multisite-skeleton/content/plugins/* /mnt/sharefs/wordpress/htdocs/wp-content/plugins
 
-echo "************ move the scripts to the shared drive"
-mkdir /mnt/sharefs/gsn-scripts
-#mv /mnt/sharefs/gsn-scripts
+echo "************ change the ownership of the wordpress folder"
+chown -R www-data:www-data /mnt/sharefs
+
+echo "************ folders to 755 and all files to 644"
+# set all folders to 755 and all files to 644
+find /mnt/sharefs/ -type d -exec chmod 755 {} \;
+find /mnt/sharefs/ -type f -exec chmod 644 {} \;
+
+sed -i -e "s/pm.max_children\s*=\s*40/pm.max_children = 80/g" /etc/php5/fpm/pool.d/www.conf
+sed -i -e "s/pm.start_servers\s*=\s*4/pm.start_servers = 8/g" /etc/php5/fpm/pool.d/www.conf
+sed -i -e "s/pm.min_spare_servers\s*=\s*4/pm.min_spare_servers = 8/g" /etc/php5/fpm/pool.d/www.conf
+sed -i -e "s/pm.max_spare_servers\s*=\s*20/pm.max_spare_servers = 32/g" /etc/php5/fpm/pool.d/www.conf
+sed -i -e "s/pm.max_requests\s*=\s*200/pm.max_requests = 800/g" /etc/php5/fpm/pool.d/www.conf
 
 echo "************ restart nginx"
-service nginx reload
+service nginx restart
