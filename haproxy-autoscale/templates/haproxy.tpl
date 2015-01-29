@@ -37,17 +37,17 @@ defaults
   option                  httplog               #With the HTTP log records
   option                  dontlognull           #Dont empty log record
   option http-server-close     
-  option abortonclose    
+  #option abortonclose    
   option forwardfor       except 127.0.0.0/8    #From these information are not forwardfor
   option                  redispatch            #Any server can handle any session
-  retries                 3                     #The 3 connection failure is that the service is not available
-  timeout http-request    10s                   #The default HTTP request timeout
-  timeout queue           1m                    #The default queue timeout
+  #retries                 3                     #The 3 connection failure is that the service is not available
+  #timeout http-request    10s                   #The default HTTP request timeout
+  #timeout queue           1m                    #The default queue timeout
   timeout connect         10s                   #The default connection timeout
   timeout client          1m                    #Default client timeout
   timeout server          1m                    #The default server timeout
-  timeout http-keep-alive 10s                   #Default persistence connection timeout
-  timeout check           10s                   #The default check interval
+  #timeout http-keep-alive 10s                   #Default persistence connection timeout
+  #timeout check           10s                   #The default check interval
 
   errorfile  400 /etc/haproxy/errors/400.http
   errorfile  403 /etc/haproxy/errors/403.http
@@ -81,7 +81,7 @@ listen stats :1988
 # main frontend which proxys to the backends
 #---------------------------------------------------------------------
 frontend http-in
-  bind        *:80
+  bind        0.0.0.0:80
   reqadd      X-Forwarded-Proto:\ http
   
   # Use General Purpose Couter (gpc) 0 in SC1 as a global abuse counter
@@ -110,7 +110,7 @@ frontend http-in
   acl url_wp_admin4 path_beg -i /wp-admin
   acl url_wp_admin5 path_beg -i /wp-login
   
-  use_backend wp-admin if url_wp_admin1 url_wp_admin2 url_wp_admin3 url_wp_admin4 url_wp_admin5 
+  #use_backend wp-admin if url_wp_admin1 or url_wp_admin2 or url_wp_admin3 or url_wp_admin4 or url_wp_admin5 
   default_backend wp-workers
     
 #---------------------------------------------------------------------
@@ -118,7 +118,7 @@ frontend http-in
 #---------------------------------------------------------------------
 backend wp-admin
   
-  server wp-instance-admin 127.0.0.1:8000 maxconn 200 check
+  server wp-instance-admin 0.0.0.0:8000 maxconn 200 check
 
 #---------------------------------------------------------------------
 # round robin balancing between the various worker backends
