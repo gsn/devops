@@ -69,10 +69,10 @@ function gsn_setup_php()
     #mv /usr/share/GeoIP/GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat
 
     # Setup Zend OpCache optimized for 4gig of ram wordpress worker (T2.Medium)
-    if [ -f /etc/php5/fpm/conf.d/05-opcache.ini ]; then
-      grep memory_consumption /etc/php5/fpm/conf.d/05-opcache.ini &> /dev/null
+    if [ -f /etc/php5/mods-availble/opcache.ini ]; then
+      grep memory_consumption /etc/php5/mods-availble/opcache.ini &> /dev/null
       if [ $? -ne 0 ]; then
-        sed -i "s/zend_extension=opcache.so/zend_extension=opcache.so\nopcache.memory_consumption=512\nopcache.max_accelerated_files=50000\nopcache.revalidate_freq=60/" /etc/php5/fpm/conf.d/05-opcache.ini \
+        sed -i "s/zend_extension=opcache.so/zend_extension=opcache.so\nopcache.memory_consumption=512\nopcache.max_accelerated_files=50000\nopcache.revalidate_freq=60/" /etc/php5/mods-availble/opcache.ini \
         || gsn_lib_error "Unable to change opcache.memory_consumption, exit status = " $?
       fi
     fi
