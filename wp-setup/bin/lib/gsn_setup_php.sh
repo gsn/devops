@@ -24,7 +24,7 @@ function gsn_setup_php()
     sed -i "s/post_max_size.*/post_max_size = 100M/" /etc/php5/fpm/php.ini
     sed -i "s/upload_max_filesize.*/upload_max_filesize = 100M/" /etc/php5/fpm/php.ini
     sed -i "s/max_execution_time.*/max_execution_time = 300/" /etc/php5/fpm/php.ini
-    sed -i "s/;date.timezone.*/date.timezone = $gsn_time_zone" /etc/php5/fpm/php.ini
+    sed -i "s/;date.timezone.*/date.timezone = $gsn_time_zone/" /etc/php5/fpm/php.ini
 
 
     # Change php5-fpm error log location
