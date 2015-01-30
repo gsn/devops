@@ -16,9 +16,9 @@ if [ ! -d ~/gsn-git ]; then
   mkdir ~/gsn-git
 fi
 
-if [ ! -d ~/gsn-git/wp-multisite-skeleton ]; then
+if [ ! -d ~/gsn-git/wp-skeleton ]; then
   gsn_lib_echo "clone the gsn wp repo"
-  git clone --recursive https://github.com/gsn/wp-multisite-skeleton.git ~/gsn-git/wp-multisite-skeleton
+  git clone --recursive https://github.com/gsn/wp-skeleton.git ~/gsn-git/wp-skeleton
 
 fi
 
@@ -47,14 +47,12 @@ fi
 if [ ! -d /mnt/sharefs/wordpress ]; then
   gsn_lib_echo "creating wordpress and internal admin folders"
   mkdir /mnt/sharefs/wordpress
-  mkdir /mnt/sharefs/wordpress/htdocs
   mkdir /mnt/sharefs/admin
   mkdir /mnt/sharefs/admin/htdocs
 
   gsn_lib_echo "move the wordpress files"
-  mv ~/gsn-git/wp-multisite-skeleton/wp/* /mnt/sharefs/wordpress/htdocs
-  mv ~/gsn-git/wp-multisite-skeleton/content/themes/* /mnt/sharefs/wordpress/htdocs/wp-content/themes
-  mv ~/gsn-git/wp-multisite-skeleton/content/plugins/* /mnt/sharefs/wordpress/htdocs/wp-content/plugins
+  cp ~/gsn-git/wp-skeleton/ /mnt/sharefs/wordpress/ --exclude .git wp-config.php
+  cp /mnt/sharefs/wordpress/wp-config-sample.php /mnt/sharefs/wordpress/htdocs/wp-config-sample.php
 
 
   # Setup SSL
