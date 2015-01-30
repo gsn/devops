@@ -29,7 +29,7 @@ if [ ! -d /mnt/sharefs ]; then
   gsn_lib_echo "create a mount point"
   mkdir /mnt/sharefs
 
-  read -e -p "Enter EBS device location:" -i "/dev/xvdf" $EBS_DRIVE
+  read -e -p "Enter EBS device location suggest (/dev/xvdf):" -i "" $EBS_DRIVE
   if [ ! -z "$EBS_DRIVE" ]; then
     mkfs -t ext4 $EBS_DRIVE
 
