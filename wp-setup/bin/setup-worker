@@ -3,17 +3,20 @@
 # Include library
 source gsn_echo.sh
 
+GSN_ADMINER_VERSION=4.1.0
+GSN_PHP_USER=www-data
+
 if [ ! -d /mnt/sharefs ]; then
   gsn_lib_echo "create a directory for the shared data"
   mkdir -p /mnt/sharefs
   chmod 755 /mnt/sharefs
-  chown www-data:www-data /mnt/sharefs
+  chown $GSN_PHP_USER:$GSN_PHP_USER /mnt/sharefs
 
   gsn_lib_echo "Enter the IP or domain of the admin box where the shared volume is:"
   read -e -p "Enter admin domain or IP:" -i "admin.prodwp.gsn2.com" ADMIN_SERVER
 
   gsn_lib_echo "set automatic mounting in case of reboot"
-  echo 'echo "admin.prodwp.gsn2.com:/mnt/sharefs /mnt/sharefs nfs4 soft,intr,rsize=8192,wsize=8192,nosuid" >> /etc/fstab'
+  echo 'echo "$ADMIN_SERVER:/mnt/sharefs /mnt/sharefs nfs4 soft,intr,rsize=8192,wsize=8192,nosuid" >> /etc/fstab'
   mount -a
 
 fi

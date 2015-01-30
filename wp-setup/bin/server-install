@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 # Include library
 source gsn_echo.sh
 for gsn_include in $(find lib/ -iname "*.sh"); do
-	source lib/$gsn_include
+	source $PWD/$gsn_include
 done
 
 apt-get update &>> /dev/null

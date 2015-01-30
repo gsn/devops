@@ -1,4 +1,4 @@
-# Install EasyEngine (ee) admin utilities
+# Install admin utilities
 
 function gsn_install_utils()
 {
