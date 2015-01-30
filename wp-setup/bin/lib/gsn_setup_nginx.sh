@@ -1,11 +1,11 @@
 # Setup nginx
 
-function ee_mod_setup_nginx()
+function gsn_setup_nginx()
 {
-	local ee_whitelist_ip_address
-	local ee_random=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n1)
-	
-	ee_lib_echo "Setting up NGINX, please wait..."
+	local gsn_whitelist_ip_address
+	local gsn_random=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n1)
+
+	gsn_lib_echo "Setting up NGINX, please wait..."
 
 	grep "GSN" /etc/nginx/nginx.conf &>> /dev/null
 	if [ $? -ne 0 ]; then
@@ -36,15 +36,15 @@ function ee_mod_setup_nginx()
 	# Update GSN version
 	# Launchpad PPA already have above settings
 	# On Ubuntu above block never executed
-	sed -i "s/X-Powered-By.*/X-Powered-By \"GroceryShoppingNetwork 1.0\";/" /etc/nginx/nginx.conf 
+	sed -i "s/X-Powered-By.*/X-Powered-By \"GroceryShoppingNetwork 1.0\";/" /etc/nginx/nginx.conf
 
 	# Create directory if not exist
 	if [ ! -d /etc/nginx/conf.d ]; then
-		mkdir /etc/nginx/conf.d || ee_lib_error "Unable to create /etc/nginx/conf.d, exit status = " $?
+		mkdir /etc/nginx/conf.d || gsn_lib_error "Unable to create /etc/nginx/conf.d, exit status = " $?
 	fi
 
 	if [ ! -d /etc/nginx/common ]; then
-		mkdir /etc/nginx/common || ee_lib_error "Unable to create /etc/nginx/common, exit status = " $?
+		mkdir /etc/nginx/common || gsn_lib_error "Unable to create /etc/nginx/common, exit status = " $?
 	fi
 
 	# Copy files
@@ -52,46 +52,19 @@ function ee_mod_setup_nginx()
 
 	# Setup service conf
 	cp ../config/nginx/sites-available/*.conf /etc/nginx/sites-available/
-  
+
 	# Delete default link
 	if [ -L /etc/nginx/sites-enabled/default ]; then
 		rm -rf /etc/nginx/sites-enabled/default
 	fi
-  
+
 	# Create a symbolic link for admin
 	if [ ! -L /etc/nginx/sites-enabled/admin.conf ]; then
 		ln -s /etc/nginx/sites-available/admin.conf /etc/nginx/sites-enabled/
 	fi
-  
+
 	# Create a symbolic link for admin
 	if [ ! -L /etc/nginx/sites-enabled/wordpress.conf ]; then
 		ln -s /etc/nginx/sites-available/wordpress.conf /etc/nginx/sites-enabled/
 	fi
-
-	# Setup logs for admin
-	if [ ! -d /var/www/admin/logs ]; then
-		mkdir -p /var/www/admin/logs
-		ln -s /var/log/nginx/admin.access.log /var/www/admin/logs/access.log
-		ln -s /var/log/nginx/admin.error.log /var/www/admin/logs/error.log
-	fi
-
-	# Setup SSL
-	# Create SSL certificate directory
-	if [ ! -d /var/www/admin/cert ]; then
-		mkdir /var/www/admin/cert
-	fi
-	
-	# Generate SSL key
-	ee_lib_echo "Generating SSL private key"
-	openssl genrsa -out /var/www/admin/cert/admin.key 2048
-
-	ee_lib_echo "Generating a certificate signing request (CSR)"
-	openssl req -new -batch -subj /commonName=127.0.0.1/ -key /var/www/admin/cert/admin.key -out /var/www/admin/cert/admin.csr 
-
-	ee_lib_echo "Removing pass phrase from SSL private key"
-	mv /var/www/admin/cert/admin.key /var/www/admin/cert/admin.key.org
-	openssl rsa -in /var/www/admin/cert/admin.key.org -out /var/www/admin/cert/admin.key
-
-	ee_lib_echo "Generating SSL certificate"
-	openssl x509 -req -days 3652 -in /var/www/admin/cert/admin.csr -signkey /var/www/admin/cert/admin.key -out /var/www/admin/cert/admin.crt
 }

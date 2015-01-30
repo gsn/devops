@@ -14,8 +14,11 @@ gsn_install_common
 
 # Install PHP
 gsn_install_php
+
+# Run other setups
 gsn_setup_php
 gsn_setup_nginx
 
 # make sure opcache is enabled
 php5enmod opcache
+service php-fpm restart
