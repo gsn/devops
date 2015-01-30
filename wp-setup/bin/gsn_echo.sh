@@ -16,3 +16,8 @@ function gsn_lib_echo_fail()
 {
   echo $(tput setaf 1)$@$(tput sgr0)
 }
+
+function gsn_lib_error()
+{
+  echo $(tput setaf 1)$@$(tput sgr0)
+}
