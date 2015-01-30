@@ -15,11 +15,11 @@ function gsn_setup_php()
 		local gsn_time_zone=$(cat /etc/timezone | head -n1 | sed "s'/'\\\/'")
 
     # make backup of existing file to cli before modifying global file in fpm
-    find /etc/php5/cli/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
+    # find /etc/php5/cli/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
 
 		# Adjust php.ini
 		sed -i "s/\[PHP\]/[PHP]\n; GSN/" /etc/php5/fpm/php.ini
-    sed -i -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php5/fpm/php.ini
+    sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php5/fpm/php.ini
 		sed -i "s/expose_php.*/expose_php = Off/" /etc/php5/fpm/php.ini
 		sed -i "s/post_max_size.*/post_max_size = 100M/" /etc/php5/fpm/php.ini
 		sed -i "s/upload_max_filesize.*/upload_max_filesize = 100M/" /etc/php5/fpm/php.ini
@@ -33,10 +33,10 @@ function gsn_setup_php()
 		# Enable php status and ping
 		sed -i "s/;ping.path/ping.path/" /etc/php5/fpm/pool.d/www.conf
 		sed -i "s/;pm.status_path/pm.status_path/" /etc/php5/fpm/pool.d/www.conf
-    sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" /etc/php5/fpm/pool.d/www.conf
+    sed -i "s/;catch_workers_output/catch_workers_output/g" /etc/php5/fpm/pool.d/www.conf
 
 		# Adjust php5-fpm pool
-    sed -i -e "s/;pm.max_requests = 500/pm.max_requests = 200/g" /etc/php5/fpm/pool.d/www.conf
+    sed -i "s/;pm.max_requests = 500/pm.max_requests = 200/g" /etc/php5/fpm/pool.d/www.conf
 		sed -i "s/pm.max_children = 5/pm.max_children = 40/" /etc/php5/fpm/pool.d/www.conf
 		sed -i "s/pm.start_servers = 2/pm.start_servers = 4/" /etc/php5/fpm/pool.d/www.conf
 		sed -i "s/pm.min_spare_servers = 2/pm.min_spare_servers = 4/" /etc/php5/fpm/pool.d/www.conf
