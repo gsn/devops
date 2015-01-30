@@ -51,7 +51,7 @@ if [ ! -d /mnt/sharefs/wordpress ]; then
   mkdir /mnt/sharefs/admin/htdocs
 
   gsn_lib_echo "move the wordpress files"
-  cp ~/gsn-git/wp-skeleton/ /mnt/sharefs/wordpress/ --exclude .git wp-config.php
+  cp ~/gsn-git/wp-skeleton/ /mnt/sharefs/wordpress/ --exclude .g* wp-config.php README.md
   cp /mnt/sharefs/wordpress/wp-config-sample.php /mnt/sharefs/wordpress/htdocs/wp-config-sample.php
 
 
