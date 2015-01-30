@@ -21,4 +21,4 @@ gsn_setup_nginx
 
 # make sure opcache is enabled
 php5enmod opcache
-service php-fpm restart
+service php5-fpm restart
