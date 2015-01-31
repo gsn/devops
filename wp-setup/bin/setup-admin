@@ -100,6 +100,6 @@ sed -i -e "s/pm.min_spare_servers\s*=\s*4/pm.min_spare_servers = 8/g" /etc/php5/
 sed -i -e "s/pm.max_spare_servers\s*=\s*20/pm.max_spare_servers = 32/g" /etc/php5/fpm/pool.d/www.conf
 sed -i -e "s/pm.max_requests\s*=\s*200/pm.max_requests = 800/g" /etc/php5/fpm/pool.d/www.conf
 
-echo "************ restart nginx"
+gsn_lib_echo "restart nginx"
 service php5-fpm restart
 service nginx restart
