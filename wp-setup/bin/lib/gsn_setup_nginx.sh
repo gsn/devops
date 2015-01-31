@@ -15,8 +15,8 @@ function gsn_setup_nginx()
     sed -i "/worker_processes/a \worker_rlimit_nofile 100000;" /etc/nginx/nginx.conf
 
     # Adjust nginx worker_connections and multi_accept
-    sed -i "s/worker_connections.*/worker_connections 4096;/" /etc/nginx/nginx.conf
-    sed -i "s/# multi_accept/multi_accept/" /etc/nginx/nginx.conf
+    sed -i "s/worker_connections.*/worker_connections 8192;/" /etc/nginx/nginx.conf
+    sed -i "s/# multi_accept/\nuse epoll;\n multi_accept/" /etc/nginx/nginx.conf
 
     # Disable nginx version
     # Set custom header
@@ -25,6 +25,9 @@ function gsn_setup_nginx()
 
     # Adjust nginx keepalive_timeout
     sed -i "s/keepalive_timeout.*/keepalive_timeout 30;/" /etc/nginx/nginx.conf
+
+    sed -i "s/mime.types;/common\/mime.types;\n include common\/blacklist.conf;\n/" /etc/nginx/nginx.conf
+
 
     # Adjust nginx log format
     sed -i "s/error_log.*/error_log \/var\/log\/nginx\/error.log;\n\n\tlog_format rt_cache '\$remote_addr \$upstream_response_time \$upstream_cache_status [\$time_local] '\n\t\t'\$http_host \"\$request\" \$status \$body_bytes_sent '\n\t\t'\"\$http_referer\" \"\$http_user_agent\"';/" /etc/nginx/nginx.conf
