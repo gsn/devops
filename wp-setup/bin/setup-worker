@@ -13,12 +13,11 @@ if [ ! -d /mnt/sharefs ]; then
   chown $GSN_PHP_USER:$GSN_PHP_USER /mnt/sharefs
 
   gsn_lib_echo "Enter the IP or domain of the admin box where the shared volume is:"
-  read -e -p "Enter admin domain or IP:" -i "admin.prodwp.gsn2.com" ADMIN_SERVER
+  read -e -p "Enter admin domain or IP:" -i "admin.wpa.gsn2.com" ADMIN_SERVER
 
   gsn_lib_echo "set automatic mounting in case of reboot"
   echo "$ADMIN_SERVER:/mnt/sharefs /mnt/sharefs nfs4 soft,intr,rsize=8192,wsize=8192,nosuid" >> /etc/fstab
   mount -a
-
 fi
 
 echo "************ restart nginx"

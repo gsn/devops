@@ -6,7 +6,10 @@ for gsn_include in $(find lib/ -iname "*.sh"); do
   source $PWD/$gsn_include
 done
 
+gsn_lib_echo "apt-get update, please wait..."
 apt-get update &>> /dev/null
+
+gsn_lib_echo "apt-get upgrade, please wait..."
 apt-get -y upgrade &>> /dev/null
 
 # Install Common Library
