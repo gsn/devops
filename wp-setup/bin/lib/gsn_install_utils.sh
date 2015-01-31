@@ -30,6 +30,6 @@ function gsn_install_utils()
     fi
 
     # phpinfo()
-    echo -e "<?php \n\t phpinfo(); \n?>" &>> /mnt/sharefs/admin/php/info.php
+    echo -e "<?php \n\t phpinfo(); \n?>" > /mnt/sharefs/admin/php/info.php
   fi
 }
