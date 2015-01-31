@@ -21,6 +21,10 @@ if [ ! -d ~/gsn-git/wp-skeleton ]; then
   gsn_lib_echo "clone the gsn wp repo"
   git clone --recursive https://github.com/gsn/wp-skeleton.git ~/gsn-git/wp-skeleton
 
+else
+  cd ~/gsn-git/wp-skeleton
+  git pull
+  cd $CWD
 fi
 
 if [ ! -d /mnt/sharefs ]; then
