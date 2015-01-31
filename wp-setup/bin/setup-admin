@@ -7,7 +7,6 @@ for gsn_include in $(find lib/ -iname "*.sh"); do
 done
 
 CWD=$PWD
-GSN_ADMINER_VERSION=4.1.0
 GSN_PHP_USER=www-data
 
 # execute in home directory

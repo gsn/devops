@@ -3,14 +3,17 @@
 # Include library
 source gsn_echo.sh
 
-GSN_ADMINER_VERSION=4.1.0
 GSN_PHP_USER=www-data
 
 if [ ! -d /mnt/sharefs ]; then
   gsn_lib_echo "create a directory for the shared data"
   mkdir -p /mnt/sharefs
-  chmod 755 /mnt/sharefs
-  chown $GSN_PHP_USER:$GSN_PHP_USER /mnt/sharefs
+
+  gsn_lib_echo "give permissions and set folders to 755 and all files to 644"
+  chown -R $GSN_PHP_USER:$GSN_PHP_USER /mnt/sharefs
+  # set all folders to 755 and all files to 644
+  find /mnt/sharefs/ -type d -exec chmod 755 {} \;
+  find /mnt/sharefs/ -type f -exec chmod 644 {} \;
 
   gsn_lib_echo "Enter the IP or domain of the admin box where the shared volume is:"
   read -e -p "Enter admin domain or IP:" -i "admin.wpa.gsn2.com" ADMIN_SERVER
@@ -20,5 +23,5 @@ if [ ! -d /mnt/sharefs ]; then
   mount -a
 fi
 
-echo "************ restart nginx"
+gsn_lib_echo "restart nginx"
 service nginx restart
