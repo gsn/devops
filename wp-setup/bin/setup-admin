@@ -6,6 +6,7 @@ for gsn_include in $(find lib/ -iname "*.sh"); do
   source $PWD/$gsn_include
 done
 
+CWD=$PWD
 GSN_ADMINER_VERSION=4.1.0
 GSN_PHP_USER=www-data
 
@@ -51,37 +52,39 @@ if [ ! -d /mnt/sharefs/wordpress ]; then
   mkdir /mnt/sharefs/admin/htdocs
 
   gsn_lib_echo "move the wordpress files"
-  cp ~/gsn-git/wp-skeleton/ /mnt/sharefs/wordpress/ --exclude .g* wp-config.php README.md
+
+  cd ~/gsn-git/wp-skeleton
+  rsync -av ./ /mnt/sharefs/wordpress/ --exclude '.g*' -exclude-from '.gitignore'
   cp /mnt/sharefs/wordpress/wp-config-sample.php /mnt/sharefs/wordpress/htdocs/wp-config-sample.php
+  cd $CWD
 
 
   # Setup SSL
   # Create SSL certificate directory
   if [ ! -d /mnt/sharefs/admin/cert ]; then
     mkdir /mnt/sharefs/admin/cert
+
+    # Generate SSL key
+    gsn_lib_echo "Generating SSL private key"
+    openssl genrsa -out /mnt/sharefs/admin/cert/admin.key 2048
+
+    gsn_lib_echo "Generating a certificate signing request (CSR)"
+    openssl req -new -batch -subj /commonName=127.0.0.1/ -key /mnt/sharefs/admin/cert/admin.key -out /mnt/sharefs/admin/cert/admin.csr
+
+    gsn_lib_echo "Removing pass phrase from SSL private key"
+    mv /mnt/sharefs/admin/cert/admin.key /mnt/sharefs/admin/cert/admin.key.org
+    openssl rsa -in /mnt/sharefs/admin/cert/admin.key.org -out /mnt/sharefs/admin/cert/admin.key
+
+    gsn_lib_echo "Generating SSL certificate"
+    openssl x509 -req -days 3652 -in /mnt/sharefs/admin/cert/admin.csr -signkey /mnt/sharefs/admin/cert/admin.key -out /mnt/sharefs/admin/cert/admin.crt
+
   fi
-
-  # Generate SSL key
-  gsn_lib_echo "Generating SSL private key"
-  openssl genrsa -out /mnt/sharefs/admin/cert/admin.key 2048
-
-  gsn_lib_echo "Generating a certificate signing request (CSR)"
-  openssl req -new -batch -subj /commonName=127.0.0.1/ -key /mnt/sharefs/admin/cert/admin.key -out /mnt/sharefs/admin/cert/admin.csr
-
-  gsn_lib_echo "Removing pass phrase from SSL private key"
-  mv /mnt/sharefs/admin/cert/admin.key /mnt/sharefs/admin/cert/admin.key.org
-  openssl rsa -in /mnt/sharefs/admin/cert/admin.key.org -out /mnt/sharefs/admin/cert/admin.key
-
-  gsn_lib_echo "Generating SSL certificate"
-  openssl x509 -req -days 3652 -in /mnt/sharefs/admin/cert/admin.csr -signkey /mnt/sharefs/admin/cert/admin.key -out /mnt/sharefs/admin/cert/admin.crt
 
   gsn_install_utils
   gsn_install_adminer
 
-  gsn_lib_echo "change the ownership of the wordpress folder"
+  gsn_lib_echo "give permissions and set folders to 755 and all files to 644"
   chown -R $GSN_PHP_USER:$GSN_PHP_USER /mnt/sharefs
-
-  gsn_lib_echo "folders to 755 and all files to 644"
   # set all folders to 755 and all files to 644
   find /mnt/sharefs/ -type d -exec chmod 755 {} \;
   find /mnt/sharefs/ -type f -exec chmod 644 {} \;
