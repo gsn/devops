@@ -7,24 +7,26 @@ for gsn_include in $(find lib/ -iname "*.sh"); do
 done
 
 CWD=$PWD
+GSN_HOME=/home/ubuntu
+GSN_GIT_HOME=$GSN_HOME/gsn-git
 GSN_PHP_USER=www-data
 
 # execute in home directory
-
-if [ ! -d ~/gsn-git ]; then
+if [ ! -d $GSN_GIT_HOME ]; then
   gsn_lib_echo "create gsn git directory"
-  mkdir ~/gsn-git
+  mkdir $GSN_GIT_HOME
 fi
 
-if [ ! -d ~/gsn-git/wp-skeleton ]; then
+if [ ! -d $GSN_GIT_HOME/wp-skeleton ]; then
   gsn_lib_echo "clone the gsn wp repo"
-  git clone --recursive https://github.com/gsn/wp-skeleton.git ~/gsn-git/wp-skeleton
-
+  cd $GSN_GIT_HOME
+  git clone --recursive https://github.com/gsn/wp-skeleton.git
 else
-  cd ~/gsn-git/wp-skeleton
+  cd $GSN_GIT_HOME/wp-skeleton
   git pull
-  cd $CWD
 fi
+
+cd $CWD
 
 if [ ! -d /mnt/sharefs ]; then
   gsn_lib_echo "install nfs requirements"
@@ -56,7 +58,7 @@ if [ ! -d /mnt/sharefs/wordpress ]; then
 
   gsn_lib_echo "move the wordpress files"
 
-  cd ~/gsn-git/wp-skeleton
+  cd $GSN_GIT_HOME/wp-skeleton
   rsync -av ./ /mnt/sharefs/wordpress/ --exclude '.g*' -exclude-from '.gitignore'
   cp wp-config-sample.php /mnt/sharefs/wordpress/htdocs/wp-config-sample.php
   cd $CWD
