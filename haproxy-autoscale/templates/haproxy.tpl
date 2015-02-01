@@ -107,8 +107,9 @@ frontend http-in :80
   acl url_wp_admin3 hdr_end(host) -i gsn.io
   acl url_wp_admin4 path_beg -i /wp-admin
   acl url_wp_admin5 path_beg -i /wp-login
+  acl url_wp_admin6 path_beg -i /wp-signup
   
-  use_backend wp-admin if url_wp_admin1 or url_wp_admin2 or url_wp_admin3 or url_wp_admin4 or url_wp_admin5 
+  use_backend wp-admin if url_wp_admin1 or url_wp_admin2 or url_wp_admin3 or url_wp_admin4 or url_wp_admin5 or url_wp_admin6
   default_backend wp-workers
     
 #---------------------------------------------------------------------
