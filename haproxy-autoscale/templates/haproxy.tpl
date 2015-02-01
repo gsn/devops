@@ -124,9 +124,15 @@ backend wp-admin
 backend wp-workers
   balance roundrobin
   # cookie  SERVERID insert indirect
+  
+  # other servers in load balance
   % for instance in instances['security-group-1']:
   server ${ instance.id } ${ instance.private_dns_name }:8000 maxconn 200 check
   % endfor
+  
+  # allow admin as backup server
+  server wp-instance-admin 0.0.0.0:8000 maxconn 200 check
+  
 
 #---------------------------------------------------------------------
 # open one worker for backend stat
