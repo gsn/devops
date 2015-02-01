@@ -26,7 +26,6 @@ function gsn_setup_php()
     sed -i "s/max_execution_time.*/max_execution_time = 300/" /etc/php5/fpm/php.ini
     sed -i "s/;date.timezone.*/date.timezone = $gsn_time_zone/" /etc/php5/fpm/php.ini
 
-
     # Change php5-fpm error log location
     sed -i "s'error_log.*'error_log = /var/log/php5/fpm.log'" /etc/php5/fpm/php-fpm.conf
 
@@ -42,25 +41,6 @@ function gsn_setup_php()
     sed -i "s/pm.min_spare_servers = 2/pm.min_spare_servers = 4/" /etc/php5/fpm/pool.d/www.conf
     sed -i "s/pm.max_spare_servers = 5/pm.max_spare_servers = 20/" /etc/php5/fpm/pool.d/www.conf
     sed -i "s/;request_terminate_timeout.*/request_terminate_timeout = 300/" /etc/php5/fpm/pool.d/www.conf
-
-    # Adjust php5-fpm listen
-    sed -i "s'listen = /var/run/php5-fpm.sock'listen = 127.0.0.1:9000'" /etc/php5/fpm/pool.d/www.conf \
-    || gsn_lib_error "Unable to change php5-fpm listen socket, exit status = " $?
-
-    # Separate php5-fpm for ee debug command
-    cp /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/debug.conf
-
-    sed -i "s'\[www\]'[debug]'" /etc/php5/fpm/pool.d/debug.conf \
-    || gsn_lib_error "Unable to change debug pool name, exit status = " $?
-
-    sed -i "s'listen = 127.0.0.1:9000'listen = 127.0.0.1:9001'" /etc/php5/fpm/pool.d/debug.conf \
-    || gsn_lib_error "Unable to change listen = 127.0.0.1:9001 for debug pool, exit status = " $?
-
-    sed -i "s';slowlog.*'slowlog = /var/log/php5/slow.log'"  /etc/php5/fpm/pool.d/debug.conf \
-    || gsn_lib_error "Unable to change slowlog settings for debug pool, exit status = " $?
-
-    sed -i "s';request_slowlog_timeout.*'request_slowlog_timeout = 10s'"  /etc/php5/fpm/pool.d/debug.conf \
-    || gsn_lib_error "Unable to change request_slowlog_timeout for debug pool, exit status = " $?
 
     #gsn_lib_echo "Downloading GeoIP Database, please wait..."
     #mkdir -p /usr/share/GeoIP
