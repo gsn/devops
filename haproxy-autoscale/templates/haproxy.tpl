@@ -70,6 +70,13 @@ listen stats :1988
   stats auth showme:showme # should disable port after viewing stat
   
 #---------------------------------------------------------------------
+# enable stats service
+#---------------------------------------------------------------------
+listen server-admin-in :46317
+  server-admin-in auth showme:showme
+  default_backend server-admin
+  
+#---------------------------------------------------------------------
 # main frontend which proxys to the backends
 #---------------------------------------------------------------------
 frontend http-in
@@ -120,4 +127,12 @@ backend wp-workers
   % for instance in instances['security-group-1']:
   server ${ instance.id } ${ instance.private_dns_name }:8000 maxconn 200 check
   % endfor
-  
+
+#---------------------------------------------------------------------
+# open one worker for server-admin
+#---------------------------------------------------------------------
+backend server-admin
+  % for instance in instances['security-group-1']:
+  server ${ instance.id } ${ instance.private_dns_name }:46317 maxconn 10 check
+  break
+  % endfor
