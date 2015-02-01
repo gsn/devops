@@ -92,7 +92,7 @@ if [ ! -d /mnt/sharefs/wordpress ]; then
   sed -i -e "s/pm.max_requests\s*=\s*200/pm.max_requests = 800/g" /etc/php5/fpm/pool.d/www.conf
 
   #finally, remove admin from wp-admin - this will be haproxy to worker for security
-  rm -f /etc/nginx/sites-available/admin.conf
+  rm -f /etc/nginx/sites-enabled/admin.conf
 fi
 
 gsn_install_utils
