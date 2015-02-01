@@ -26,7 +26,7 @@ function gsn_setup_nginx()
     # Adjust nginx keepalive_timeout
     sed -i "s/keepalive_timeout.*/keepalive_timeout 30;/" /etc/nginx/nginx.conf
 
-    sed -i "s/mime.types;/common\/mime.types;\n include common\/blacklist.conf;\n/" /etc/nginx/nginx.conf
+    sed -i "s/mime.types;/common\/mime.types;/" /etc/nginx/nginx.conf
 
 
     # Adjust nginx log format
