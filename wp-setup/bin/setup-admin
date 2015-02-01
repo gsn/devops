@@ -59,7 +59,7 @@ if [ ! -d /mnt/sharefs/wordpress ]; then
 
   cd $GSN_GIT_HOME/wp-skeleton
   gsn_lib_echo $PWD
-  rsync -avz --exclude '.g*' -exclude-from '.gitignore' ./ /mnt/sharefs/wordpress
+  rsync -avz --exclude '.g*' -exclude-from '.gitignore' ./ /mnt/sharefs/wordpress &> /dev/null
   cp wp-config-sample.php /mnt/sharefs/wordpress/htdocs/wp-config-sample.php
   cd $CWD
 
