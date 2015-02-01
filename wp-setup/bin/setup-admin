@@ -59,6 +59,7 @@ if [ ! -d /mnt/sharefs/wordpress ]; then
   gsn_lib_echo "move the wordpress files"
 
   cd $GSN_GIT_HOME/wp-skeleton
+  gsn_lib_echo $PWD
   rsync -av ./ /mnt/sharefs/wordpress/ --exclude '.g*' -exclude-from '.gitignore'
   cp wp-config-sample.php /mnt/sharefs/wordpress/htdocs/wp-config-sample.php
   cd $CWD
