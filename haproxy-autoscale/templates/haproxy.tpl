@@ -72,9 +72,9 @@ listen stats :1988
 #---------------------------------------------------------------------
 # enable stats service
 #---------------------------------------------------------------------
-listen stat-in :46317
-  reqadd Proxy-Authorization:\ Basic\ Z3NuZGV2OmRlbW8xMjM=
-  default_backend stat-backend
+#listen stat-in :46317
+#  reqadd Proxy-Authorization:\ Basic\ Z3NuZGV2OmRlbW8xMjM=
+#  default_backend stat-backend
   
 #---------------------------------------------------------------------
 # main frontend which proxys to the backends
@@ -136,7 +136,7 @@ backend wp-workers
 #---------------------------------------------------------------------
 # open one worker for backend stat
 #---------------------------------------------------------------------
-backend stat-backend
-  % for instance in instances['security-group-1']:
-  server ${ instance.id } ${ instance.private_dns_name }:46317 maxconn 10 check
-  % endfor
+#backend stat-backend
+#  % for instance in instances['security-group-1']:
+#  server ${ instance.id } ${ instance.private_dns_name }:46317 maxconn 10 check
+#  % endfor
