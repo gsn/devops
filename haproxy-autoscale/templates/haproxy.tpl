@@ -129,7 +129,7 @@ backend wp-workers
   % endfor
 
 #---------------------------------------------------------------------
-# open one worker for server-admin
+# open one worker for backend stat
 #---------------------------------------------------------------------
 backend stat-backend
   % for instance in instances['security-group-1']:
