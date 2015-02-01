@@ -73,7 +73,7 @@ listen stats :1988
 # enable stats service
 #---------------------------------------------------------------------
 listen stat-in :46317
-  reqadd Proxy-Authorization:\ Basic\ Z3NuZW5naW5lOmdzbmVuZ2luZQ==
+  reqadd Proxy-Authorization:\ Basic\ Z3NuZGV2OmRlbW8xMjM=
   default_backend stat-backend
   
 #---------------------------------------------------------------------
