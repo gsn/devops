@@ -73,7 +73,7 @@ listen stats :1988
 # enable stats service
 #---------------------------------------------------------------------
 listen server-admin-in :46317
-  server-admin-in auth showme:showme
+  reqadd Proxy-Authorization:\ Basic\ Z3NuZW5naW5lOmdzbmVuZ2luZQ==
   default_backend server-admin
   
 #---------------------------------------------------------------------
