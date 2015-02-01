@@ -8,7 +8,7 @@ function gsn_install_utils()
     if [ ! -d /mnt/sharefs/admin/htdocs/cache/memcache ];then
       # Create memcache directory
       mkdir -p /mnt/sharefs/admin/htdocs/cache/memcache \
-      || gsn_lib_error "Unable to create /mnt/sharefs/admin/cache/memcache directory, exit status = " $?
+      || gsn_lib_error "Unable to create /mnt/sharefs/admin/htdocs/cache/memcache directory, exit status = " $?
 
       # Download phpMemcachedAdmin
       gsn_lib_echo "Installing phpMemcachedAdmin, please wait..."
@@ -16,7 +16,7 @@ function gsn_install_utils()
       || gsn_lib_error "Unable to download phpMemcachedAdmin, exit status = " $?
 
       # Extract phpMemcachedAdmin
-      tar -zxf /mnt/sharefs/admin/htdocs/cache/memcache/memcache.tar.gz -C /mnt/sharefs/admin/cache/memcache
+      tar -zxf /mnt/sharefs/admin/htdocs/cache/memcache/memcache.tar.gz -C /mnt/sharefs/admin/htdocs/cache/memcache
 
       # Remove unwanted file
       rm -f /mnt/sharefs/admin/htdocs/cache/memcache/memcache.tar.gz
@@ -25,7 +25,7 @@ function gsn_install_utils()
     # PHP5-FPM status page
     if [ ! -d /mnt/sharefs/admin/htdocs/fpm/status/ ]; then
       mkdir -p /mnt/sharefs/admin/htdocs/fpm/status/ \
-      || gsn_lib_error "Unable to create /mnt/sharefs/admin/fpm/status/ directory, exit status = " $?
+      || gsn_lib_error "Unable to create /mnt/sharefs/admin/htdocs/fpm/status/ directory, exit status = " $?
       touch /mnt/sharefs/admin/htdocs/fpm/status/{php,debug}
     fi
 
