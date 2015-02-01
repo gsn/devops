@@ -70,4 +70,16 @@ function gsn_setup_nginx()
   if [ ! -L /etc/nginx/sites-enabled/wordpress.conf ]; then
     ln -s /etc/nginx/sites-available/wordpress.conf /etc/nginx/sites-enabled/
   fi
+  
+  # Generate htpasswd-ee file
+	if [ ! -f /etc/nginx/htpasswd-gsn ]; then
+		# Use same variable name as used in ee_mod_secure_auth function
+		GSN_HTTP_AUTH_USER=gsnengine
+		GSN_HTTP_AUTH_PASS=$gsn_random
+		echo
+		gsn_lib_echo "HTTP authentication username: $GSN_HTTP_AUTH_USER"
+		gsn_lib_echo "HTTP authentication password: $GSN_HTTP_AUTH_PASS"
+
+		printf "$EE_HTTP_AUTH_USER:$(openssl passwd -crypt $GSN_HTTP_AUTH_PASS 2> /dev/null)\n" > /etc/nginx/htpasswd-gsn 2> /dev/null
+	fi
 }
