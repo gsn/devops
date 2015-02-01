@@ -33,12 +33,12 @@ if [ ! -d /mnt/sharefs ]; then
   gsn_lib_echo "create a mount point"
   mkdir /mnt/sharefs
 
-  read -e -p "Enter EBS device location suggest (/dev/xvdf):" -i "" $EBS_DRIVE
+  read -e -p "Enter EBS device location suggest (/dev/xvdf):" -i "" EBS_DRIVE
   if [ ! -z "$EBS_DRIVE" ]; then
     mkfs -t ext4 $EBS_DRIVE
 
     gsn_lib_echo "mount the attached $EBS_DRIVE to /mnt/sharefs"
-    mount /dev/xvdf /mnt/sharefs
+    mount $EBS_DRIVE /mnt/sharefs
 
     gsn_lib_echo "give permission to access the drive to the worker(s)"
     echo "\n/mnt/sharefs 10.0.0.0/16(rw,sync,no_subtree_check)" >> /etc/exports
