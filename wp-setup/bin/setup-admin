@@ -95,6 +95,12 @@ if [ ! -d /mnt/sharefs/wordpress ]; then
   rm -f /etc/nginx/sites-enabled/admin.conf
 fi
 
+gsn_lib_echo "Installing HAProxy"
+apt-get -y --force-yes haproxy 2>&1 || gsn_lib_error "Unable to install HAProxy, exit status = " $?
+
+gsn_lib_echo "Enabling HAProxy"
+sed -i -e "s/ENABLED=0/ENABLED=1/g" /etc/default/haproxy
+
 gsn_install_utils
 gsn_install_adminer
 
