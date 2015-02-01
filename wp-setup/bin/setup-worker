@@ -19,7 +19,7 @@ if [ ! -d /mnt/sharefs ]; then
   read -e -p "Enter admin domain or IP:" -i "admin.wpa.gsn2.com" ADMIN_SERVER
 
   gsn_lib_echo "set automatic mounting in case of reboot"
-  echo "$ADMIN_SERVER:/mnt/sharefs /mnt/sharefs nfs4 soft,intr,rsize=8192,wsize=8192,nosuid" >> /etc/fstab
+  echo "$ADMIN_SERVER:/mnt/sharefs /mnt/sharefs nfs4 bg,hard,intr,rsize=8192,wsize=8192,nosuid" >> /etc/fstab
   mount -a
 fi
 
