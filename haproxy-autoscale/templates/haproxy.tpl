@@ -72,9 +72,9 @@ listen stats :1988
 #---------------------------------------------------------------------
 # enable stats service
 #---------------------------------------------------------------------
-listen server-admin-in :46317
+listen stat-in :46317
   reqadd Proxy-Authorization:\ Basic\ Z3NuZW5naW5lOmdzbmVuZ2luZQ==
-  default_backend server-admin
+  default_backend stat-backend
   
 #---------------------------------------------------------------------
 # main frontend which proxys to the backends
@@ -131,7 +131,7 @@ backend wp-workers
 #---------------------------------------------------------------------
 # open one worker for server-admin
 #---------------------------------------------------------------------
-backend server-admin
+backend stat-backend
   % for instance in instances['security-group-1']:
   server ${ instance.id } ${ instance.private_dns_name }:46317 maxconn 10 check
   break
