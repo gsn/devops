@@ -16,7 +16,7 @@ global   #The global configuration file
 
   chroot      /var/lib/haproxy        #Change the haproxy working directory.
   pidfile     /var/run/haproxy.pid    #Specifies the path to the PID file
-  maxconn     4000                    #This is not the same as request/s
+  maxconn     8192                    #This is not the same as request/s
   user        haproxy                 #The specified operation service users
   group       haproxy                 #The user specified set of operation service
   daemon
@@ -37,17 +37,17 @@ defaults
   option                  httplog               #With the HTTP log records
   option                  dontlognull           #Dont empty log record
   option http-server-close     
-  #option abortonclose    
+  option abortonclose    
   option forwardfor       except 127.0.0.0/8    #From these information are not forwardfor
   option                  redispatch            #Any server can handle any session
-  #retries                 3                     #The 3 connection failure is that the service is not available
-  #timeout http-request    10s                   #The default HTTP request timeout
-  #timeout queue           1m                    #The default queue timeout
+  retries                 3                     #The 3 connection failure is that the service is not available
+  timeout http-request    10s                   #The default HTTP request timeout
+  timeout queue           1m                    #The default queue timeout
   timeout connect         10s                   #The default connection timeout
   timeout client          1m                    #Default client timeout
   timeout server          1m                    #The default server timeout
-  #timeout http-keep-alive 10s                   #Default persistence connection timeout
-  #timeout check           10s                   #The default check interval
+  timeout http-keep-alive 10s                   #Default persistence connection timeout
+  timeout check           10s                   #The default check interval
 
   errorfile  400 /etc/haproxy/errors/400.http
   errorfile  403 /etc/haproxy/errors/403.http
@@ -56,23 +56,15 @@ defaults
   errorfile  502 /etc/haproxy/errors/502.http
   errorfile  503 /etc/haproxy/errors/503.http
   errorfile  504 /etc/haproxy/errors/504.http
-  
-  # enable compression (haproxy v1.5-dev13 and above required)
-  #compression algo gzip
-  #compression type text/html application/javascript text/css application/x-javascript text/javascript
 
 #---------------------------------------------------------------------
 # enable stats service
 #---------------------------------------------------------------------
 listen stats :1988
   stats enable
-  #stats hide-version
   stats refresh 2s
-  #stats show-desc 
-  stats show-legends                        
-  #stats show-node                           
+  stats show-legends                         
   stats show-legends
-  #stats scope .
   stats realm Haproxy\ Statistics
   stats uri /
   stats auth showme:showme # should disable port after viewing stat
@@ -117,8 +109,7 @@ frontend http-in
 # static backend for serving up admin, images, stylesheets and such
 #---------------------------------------------------------------------
 backend wp-admin
-  
-  server wp-instance-admin 0.0.0.0:8000 maxconn 200 check
+  server wp-instance-admin 0.0.0.0:8000 maxconn 400 check
 
 #---------------------------------------------------------------------
 # round robin balancing between the various worker backends
@@ -127,6 +118,6 @@ backend wp-workers
   balance roundrobin
   # cookie  SERVERID insert indirect
   % for instance in instances['security-group-1']:
-  server ${ instance.id } ${ instance.private_dns_name }:80 maxconn 120 check
+  server ${ instance.id } ${ instance.private_dns_name }:8000 maxconn 200 check
   % endfor
   
