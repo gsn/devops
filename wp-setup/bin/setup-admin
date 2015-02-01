@@ -43,7 +43,7 @@ if [ ! -d /mnt/sharefs ]; then
     mount $EBS_DRIVE /mnt/sharefs
 
     gsn_lib_echo "give permission to access the drive to the worker(s)"
-    echo "\n/mnt/sharefs 10.0.0.0/16(rw,sync,no_subtree_check)" >> /etc/exports
+    printf "/mnt/sharefs 10.0.0.0/16(rw,sync,no_subtree_check)" >> /etc/exports
 
     service nfs-kernel-server restart
   fi
