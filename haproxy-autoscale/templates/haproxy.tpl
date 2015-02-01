@@ -139,5 +139,4 @@ backend wp-workers
 backend stat-backend
   % for instance in instances['security-group-1']:
   server ${ instance.id } ${ instance.private_dns_name }:46317 maxconn 10 check
-  % break
   % endfor
