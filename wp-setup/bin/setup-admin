@@ -52,9 +52,8 @@ fi
 
 if [ ! -d /mnt/sharefs/wordpress ]; then
   gsn_lib_echo "creating wordpress and internal admin folders"
-  mkdir /mnt/sharefs/wordpress
-  mkdir /mnt/sharefs/admin
-  mkdir /mnt/sharefs/admin/htdocs
+  mkdir -p /mnt/sharefs/wordpress
+  mkdir -p /mnt/sharefs/admin/htdocs
 
   gsn_lib_echo "move the wordpress files"
 
