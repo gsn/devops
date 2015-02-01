@@ -36,7 +36,7 @@ function gsn_setup_php()
 
     # Adjust php5-fpm pool
     sed -i "s/;pm.max_requests = 500/pm.max_requests = 200/" /etc/php5/fpm/pool.d/www.conf
-    sed -i "s/pm.max_children = 5/pm.max_children = 20/" /etc/php5/fpm/pool.d/www.conf
+    sed -i "s/pm.max_children = 5/pm.max_children = 40/" /etc/php5/fpm/pool.d/www.conf
     sed -i "s/pm.start_servers = 2/pm.start_servers = 4/" /etc/php5/fpm/pool.d/www.conf
     sed -i "s/pm.min_spare_servers = 1/pm.min_spare_servers = 4/" /etc/php5/fpm/pool.d/www.conf
     sed -i "s/pm.max_spare_servers = 3/pm.max_spare_servers = 12/" /etc/php5/fpm/pool.d/www.conf
