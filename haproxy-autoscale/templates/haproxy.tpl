@@ -37,7 +37,7 @@ defaults
   option                  httplog               #With the HTTP log records
   option                  dontlognull           #Dont empty log record
   option http-server-close     
-  option abortonclose    
+  #option abortonclose    
   option forwardfor       except 127.0.0.0/8    #From these information are not forwardfor
   option                  redispatch            #Any server can handle any session
   retries                 3                     #The 3 connection failure is that the service is not available
@@ -79,8 +79,7 @@ listen stats :1988
 #---------------------------------------------------------------------
 # main frontend which proxys to the backends
 #---------------------------------------------------------------------
-frontend http-in
-  bind        0.0.0.0:80
+frontend http-in :80
   reqadd      X-Forwarded-Proto:\ http
   
   # Use General Purpose Couter (gpc) 0 in SC1 as a global abuse counter
