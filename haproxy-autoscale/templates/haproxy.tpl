@@ -132,7 +132,6 @@ backend wp-workers
   
   # allow admin as backup server
   server wp-instance-admin 0.0.0.0:8000 maxconn 200 check
-  
 
 #---------------------------------------------------------------------
 # open one worker for backend stat
