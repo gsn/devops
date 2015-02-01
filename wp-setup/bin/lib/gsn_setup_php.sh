@@ -36,11 +36,15 @@ function gsn_setup_php()
 
     # Adjust php5-fpm pool
     sed -i "s/;pm.max_requests = 500/pm.max_requests = 200/" /etc/php5/fpm/pool.d/www.conf
-    sed -i "s/pm.max_children = 5/pm.max_children = 40/" /etc/php5/fpm/pool.d/www.conf
+    sed -i "s/pm.max_children = 5/pm.max_children = 20/" /etc/php5/fpm/pool.d/www.conf
     sed -i "s/pm.start_servers = 2/pm.start_servers = 4/" /etc/php5/fpm/pool.d/www.conf
     sed -i "s/pm.min_spare_servers = 1/pm.min_spare_servers = 4/" /etc/php5/fpm/pool.d/www.conf
-    sed -i "s/pm.max_spare_servers = 3/pm.max_spare_servers = 20/" /etc/php5/fpm/pool.d/www.conf
+    sed -i "s/pm.max_spare_servers = 3/pm.max_spare_servers = 12/" /etc/php5/fpm/pool.d/www.conf
     sed -i "s/;request_terminate_timeout.*/request_terminate_timeout = 300/" /etc/php5/fpm/pool.d/www.conf
+    
+    # Adjust php5-fpm listen
+    sed -i "s'listen = /var/run/php5-fpm.sock'listen = 127.0.0.1:9000'" /etc/php5/fpm/pool.d/www.conf \
+    || gsn_lib_error "Unable to change php5-fpm listen socket, exit status = " $?
 
     #gsn_lib_echo "Downloading GeoIP Database, please wait..."
     #mkdir -p /usr/share/GeoIP
