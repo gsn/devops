@@ -30,7 +30,7 @@ fi
 read -e -p "To run this part of the setup, type (admin/worker):" -i "" GSN_SETUP
 if [ "$GSN_SETUP" == "admin" ]; then
   gsn_setup_admin
-if
+fi
 if [ "$GSN_SETUP" == "worker" ]; then
   gsn_setup_worker
 fi
