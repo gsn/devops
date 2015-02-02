@@ -59,7 +59,7 @@ if [ ! -d /mnt/sharefs ]; then
   rm -f /etc/nginx/sites-enabled/admin.conf
 
   gsn_lib_echo "Installing HAProxy"
-  apt-get -y --force-yes haproxy 2>&1 || gsn_lib_error "Unable to install HAProxy, exit status = " $?
+  apt-get -y --force-yes install haproxy 2>&1 || gsn_lib_error "Unable to install HAProxy, exit status = " $?
 
   gsn_lib_echo "Enabling HAProxy service and logging"
   sed -i -e "s/ENABLED=0/ENABLED=1/g" /etc/default/haproxy
