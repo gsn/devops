@@ -25,7 +25,7 @@ global   #The global configuration file
   stats       socket /var/lib/haproxy/stats
 
   # spread health check to avoid sending agent and health checks to servers at exact intervals
-  spread-checks 5 
+  spread-checks 5
 
 #---------------------------------------------------------------------
 # common defaults that all the 'listen' and 'backend' sections will
@@ -36,9 +36,9 @@ defaults
   log                     global                #Global logging
   option                  httplog               #With the HTTP log records
   option                  dontlognull           #Dont empty log record
-  option http-server-close     
-  #option abortonclose    
-  option forwardfor       except 127.0.0.0/8    #From these information are not forwardfor
+  option http-server-close
+  option abortonclose
+  option forwardfor       #except 127.0.0.0/8    #From these information are not forwardfor
   option                  redispatch            #Any server can handle any session
   retries                 3                     #The 3 connection failure is that the service is not available
   timeout http-request    10s                   #The default HTTP request timeout
@@ -63,32 +63,30 @@ defaults
 listen stats :1988
   stats enable
   stats refresh 2s
-  stats show-legends                         
   stats show-legends
   stats realm Haproxy\ Statistics
   stats uri /
   stats auth showme:showme # should disable port after viewing stat
-  
+
 #---------------------------------------------------------------------
 # enable stats service
 #---------------------------------------------------------------------
-#listen stat-in :46317
-#  reqadd Proxy-Authorization:\ Basic\ Z3NuZGV2OmRlbW8xMjM=
-#  default_backend stat-backend
-  
+listen stat-in :46317
+  default_backend stat-backend
+
 #---------------------------------------------------------------------
 # main frontend which proxys to the backends
 #---------------------------------------------------------------------
 frontend http-in :80
   reqadd      X-Forwarded-Proto:\ http
-  
+
   # Use General Purpose Couter (gpc) 0 in SC1 as a global abuse counter
   # Monitors the number of request sent by an IP over a period of 10 seconds
   # stick-table type ip size 1m expire 10s store gpc0,http_req_rate(10s),http_err_rate(10s)
-  
+
   # Allow clean known IPs to bypass the filter, remember to add CDN ips (maxcdn)
   # tcp-request connection accept if { src -f /etc/haproxy/whitelist.lst }
-  
+
   # Shut the new connection as long as the client has already 200 opened
   # 200 is a generous number to support corporate browsing scenario
   # tcp-request connection track-sc1 src
@@ -100,7 +98,7 @@ frontend http-in :80
   # acl flag_abuser src_inc_gpc0(ft_web)
   # tcp-request content reject if abuse flag_abuser
   # http-request deny if abuse flag_abuser
-  
+
   # define wp-admin url acl
   acl url_wp_admin1 hdr_end(host) -i gsn2.com
   acl url_wp_admin2 hdr_end(host) -i gsngrocers.com
@@ -108,35 +106,38 @@ frontend http-in :80
   acl url_wp_admin4 path_beg -i /wp-admin
   acl url_wp_admin5 path_beg -i /wp-login
   acl url_wp_admin6 path_beg -i /wp-signup
-  
-  use_backend wp-admin if url_wp_admin1 or url_wp_admin2 or url_wp_admin3 or url_wp_admin4 or url_wp_admin5 or url_wp_admin6
+
+  use_backend wp-admin if url_wp_admin1 or url_wp_admin3 or url_wp_admin4 or url_wp_admin5 or url_wp_admin6
   default_backend wp-workers
-    
+
 #---------------------------------------------------------------------
 # static backend for serving up admin, images, stylesheets and such
 #---------------------------------------------------------------------
 backend wp-admin
+  rspadd X-Server:\ gsn1
   server wp-instance-admin 0.0.0.0:8000 maxconn 400 check
 
 #---------------------------------------------------------------------
 # round robin balancing between the various worker backends
 #---------------------------------------------------------------------
 backend wp-workers
+  rspadd X-Server:\ gsn2
   balance roundrobin
   # cookie  SERVERID insert indirect
-  
+
   # other servers in load balance
   % for instance in instances['security-group-1']:
   server ${ instance.id } ${ instance.private_dns_name }:8000 maxconn 200 check
   % endfor
-  
+
   # allow admin as backup server
   server wp-instance-admin 0.0.0.0:8000 maxconn 200 check
 
 #---------------------------------------------------------------------
-# open one worker for backend stat
+# use worker for backend stat
 #---------------------------------------------------------------------
-#backend stat-backend
-#  % for instance in instances['security-group-1']:
-#  server ${ instance.id } ${ instance.private_dns_name }:46317 maxconn 10 check
-#  % endfor
+backend stat-backend
+  balance roundrobin
+  % for instance in instances['security-group-1']:
+  server ${ instance.id } ${ instance.private_dns_name }:46317 maxconn 10 check
+  % endfor

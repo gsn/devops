@@ -6,6 +6,9 @@ for gsn_include in $(find lib/ -iname "*.sh"); do
   source $PWD/$gsn_include
 done
 
+gsn_lib_echo "add haproxy 1.5 repository..."
+add-apt-repository ppa:vbernat/haproxy-1.5
+
 gsn_lib_echo "apt-get update, please wait..."
 apt-get update
 
