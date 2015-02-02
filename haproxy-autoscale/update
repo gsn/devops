@@ -1,0 +1,3 @@
+#!/bin/sh
+cd /home/ubuntu/gsn-git/devops/haproxy-autoscale
+/usr/bin/python update-haproxy.py --access-key='replaceme' --secret-key='meplacme' --security-group='wpa-secgrp-app' --output='/etc/haproxy/haproxy.cfg'

@@ -41,10 +41,10 @@ function gsn_setup_php()
     sed -i "s/pm.min_spare_servers = 1/pm.min_spare_servers = 4/" /etc/php5/fpm/pool.d/www.conf
     sed -i "s/pm.max_spare_servers = 3/pm.max_spare_servers = 12/" /etc/php5/fpm/pool.d/www.conf
     sed -i "s/;request_terminate_timeout.*/request_terminate_timeout = 300/" /etc/php5/fpm/pool.d/www.conf
-    
-    # Adjust php5-fpm listen
-    sed -i "s'listen = /var/run/php5-fpm.sock'listen = 127.0.0.1:9000'" /etc/php5/fpm/pool.d/www.conf \
-    || gsn_lib_error "Unable to change php5-fpm listen socket, exit status = " $?
+
+    # Adjust php5-fpm listen sock is faster than tcp
+    #sed -i "s'listen = /var/run/php5-fpm.sock'listen = 127.0.0.1:9000'" /etc/php5/fpm/pool.d/www.conf \
+    #|| gsn_lib_error "Unable to change php5-fpm listen socket, exit status = " $?
 
     #gsn_lib_echo "Downloading GeoIP Database, please wait..."
     #mkdir -p /usr/share/GeoIP
@@ -56,7 +56,7 @@ function gsn_setup_php()
     if [ -f /etc/php5/mods-available/opcache.ini ]; then
       grep memory_consumption /etc/php5/mods-available/opcache.ini &> /dev/null
       if [ $? -ne 0 ]; then
-        sed -i "s/zend_extension=opcache.so/zend_extension=opcache.so\nopcache.memory_consumption=512\nopcache.max_accelerated_files=50000\nopcache.revalidate_freq=60/" /etc/php5/mods-available/opcache.ini \
+        sed -i "s/zend_extension=opcache.so/zend_extension=opcache.so\nopcache.memory_consumption=128\nopcache.max_accelerated_files=4000\nopcache.revalidate_freq=240/" /etc/php5/mods-available/opcache.ini \
         || gsn_lib_error "Unable to change opcache.memory_consumption, exit status = " $?
       fi
     fi

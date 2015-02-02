@@ -22,13 +22,6 @@ function gsn_install_utils()
       rm -f /mnt/sharefs/admin/htdocs/cache/memcache/memcache.tar.gz
     fi
 
-    # PHP5-FPM status page
-    if [ ! -d /mnt/sharefs/admin/htdocs/fpm/status/ ]; then
-      mkdir -p /mnt/sharefs/admin/htdocs/fpm/status/ \
-      || gsn_lib_error "Unable to create /mnt/sharefs/admin/htdocs/fpm/status/ directory, exit status = " $?
-      touch /mnt/sharefs/admin/htdocs/fpm/status/{php,debug}
-    fi
-
     # phpinfo()
     printf "<?php \n\t phpinfo(); \n?>" > /mnt/sharefs/admin/htdocs/info.php
   fi
