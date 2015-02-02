@@ -131,13 +131,14 @@ backend wp-workers
   % endfor
 
   # allow admin as backup server
-  server wp-instance-admin 0.0.0.0:8000 maxconn 200 check
+  # server wp-instance-admin 0.0.0.0:8000 maxconn 200 check
 
 #---------------------------------------------------------------------
 # use worker for backend stat
 #---------------------------------------------------------------------
 backend stat-backend
   balance roundrobin
+  cookie  GSNSERVERID insert indirect
   % for instance in instances['security-group-1']:
   server ${ instance.id } ${ instance.private_dns_name }:46317 maxconn 10 check
   % endfor
