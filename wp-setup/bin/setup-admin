@@ -11,6 +11,15 @@ GSN_HOME=/home/ubuntu
 GSN_GIT_HOME=$GSN_HOME/gsn-git
 GSN_PHP_USER=www-data
 
+gsn_lib_echo "add haproxy 1.5 repository..."
+add-apt-repository ppa:vbernat/haproxy-1.5
+
+gsn_lib_echo "apt-get update, please wait..."
+apt-get update
+
+gsn_lib_echo "apt-get upgrade, please wait..."
+apt-get -y upgrade
+
 # execute in home directory
 if [ ! -d $GSN_GIT_HOME ]; then
   gsn_lib_echo "create gsn git directory"
