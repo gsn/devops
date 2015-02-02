@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Include library
+source gsn_echo.sh
+for gsn_include in $(find lib/ -iname "*.sh"); do
+  source $PWD/$gsn_include
+done
+
+CWD=$PWD
+GSN_HOME=/home/ubuntu
+GSN_GIT_HOME=$GSN_HOME/gsn-git
+GSN_PHP_USER=www-data
+
+read -e -p "Do server install (y/n)?" -i "y" GSN_SERVER_INSTALL
+if [ "$GSN_SERVER_INSTALL" == "y" ]; then
+  gsn_lib_echo "Executing server install..."
+
+  # Install Common Library
+  gsn_install_common
+
+  # Install PHP
+  gsn_install_php
+
+  # Run other setups
+  gsn_setup_php
+  gsn_setup_nginx
+
+fi
+
+read -e -p "To run this part of the setup, type (admin/worker):" -i "" GSN_SETUP
+if [ "$GSN_SETUP" == "admin" ]; then
+  gsn_setup_admin
+else if [ $GSN_SETUP == "worker"]; then
+  gsn_setup_worker
+fi
+
+# make sure opcache is enabled
+php5enmod opcache
+service php5-fpm restart
+service nginx restart
+
+gsn_lib_echo "Setup complete for:".$GSN_SETUP

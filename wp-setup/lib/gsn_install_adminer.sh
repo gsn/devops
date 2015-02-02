@@ -10,7 +10,7 @@ function gsn_install_adminer()
 
     # Download Adminer
     gsn_lib_echo "Setup adminer"
-    cp ../config/adminer-4.1.0-mysql-en.php /mnt/sharefs/admin/htdocs/db/adminer/index.php
+    cp $CWD/config/adminer-4.1.0-mysql-en.php /mnt/sharefs/admin/htdocs/db/adminer/index.php
 
   fi
 }

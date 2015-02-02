@@ -51,10 +51,10 @@ function gsn_setup_nginx()
   fi
 
   # Copy files
-  cp -a ../config/nginx/conf.d ../config/nginx/common /etc/nginx
+  cp -a $CWD/config/nginx/conf.d $CWD/config/nginx/common /etc/nginx
 
   # Setup service conf
-  cp ../config/nginx/sites-available/*.conf /etc/nginx/sites-available/
+  cp $CWD/config/nginx/sites-available/*.conf /etc/nginx/sites-available/
 
   # Delete default link
   if [ -L /etc/nginx/sites-enabled/default ]; then
@@ -70,7 +70,7 @@ function gsn_setup_nginx()
   if [ ! -L /etc/nginx/sites-enabled/wordpress.conf ]; then
     ln -s /etc/nginx/sites-available/wordpress.conf /etc/nginx/sites-enabled/
   fi
-  
+
   # Generate htpasswd-ee file
 	if [ ! -f /etc/nginx/htpasswd-gsn ]; then
 		# Use same variable name as used in ee_mod_secure_auth function
