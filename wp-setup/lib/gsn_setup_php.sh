@@ -50,8 +50,8 @@ function gsn_setup_php()
     # sock tends to fail, having multiple sock decrease failure rate
     cp /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www2.conf
     cp /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www3.conf
-    sed -i "s'listen = /var/run/php5-fpm.sock'/var/run/php5-fpm.sock2'" /etc/php5/fpm/pool.d/www2.conf
-    sed -i "s'listen = /var/run/php5-fpm.sock'/var/run/php5-fpm.sock3'" /etc/php5/fpm/pool.d/www3.conf
+    sed -i "s'listen = /var/run/php5-fpm.sock'listen = /var/run/php5-fpm.sock2'" /etc/php5/fpm/pool.d/www2.conf
+    sed -i "s'listen = /var/run/php5-fpm.sock'listen = /var/run/php5-fpm.sock3'" /etc/php5/fpm/pool.d/www3.conf
     
     
 
