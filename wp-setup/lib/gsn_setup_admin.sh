@@ -49,11 +49,11 @@ function gsn_setup_admin()
       service nfs-kernel-server restart
     fi
 
-    sed -i -e "s/pm.max_children\s*=\s*40/pm.max_children = 80/g" /etc/php5/fpm/pool.d/www.conf
-    sed -i -e "s/pm.start_servers\s*=\s*4/pm.start_servers = 8/g" /etc/php5/fpm/pool.d/www.conf
-    sed -i -e "s/pm.min_spare_servers\s*=\s*4/pm.min_spare_servers = 8/g" /etc/php5/fpm/pool.d/www.conf
-    sed -i -e "s/pm.max_spare_servers\s*=\s*12/pm.max_spare_servers = 24/g" /etc/php5/fpm/pool.d/www.conf
-    sed -i -e "s/pm.max_requests\s*=\s*200/pm.max_requests = 800/g" /etc/php5/fpm/pool.d/www.conf
+    #sed -i -e "s/pm.max_children\s*=\s*40/pm.max_children = 80/g" /etc/php5/fpm/pool.d/www.conf
+    #sed -i -e "s/pm.start_servers\s*=\s*4/pm.start_servers = 8/g" /etc/php5/fpm/pool.d/www.conf
+    #sed -i -e "s/pm.min_spare_servers\s*=\s*4/pm.min_spare_servers = 8/g" /etc/php5/fpm/pool.d/www.conf
+    #sed -i -e "s/pm.max_spare_servers\s*=\s*12/pm.max_spare_servers = 24/g" /etc/php5/fpm/pool.d/www.conf
+    #sed -i -e "s/pm.max_requests\s*=\s*200/pm.max_requests = 800/g" /etc/php5/fpm/pool.d/www.conf
 
     #finally, remove admin from wp-admin - this will be haproxy to worker for security
     rm -f /etc/nginx/sites-enabled/admin.conf
