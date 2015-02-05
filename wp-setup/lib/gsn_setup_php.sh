@@ -45,6 +45,17 @@ function gsn_setup_php()
     # Adjust php5-fpm listen sock is faster than tcp
     #sed -i "s'listen = /var/run/php5-fpm.sock'listen = 127.0.0.1:9000'" /etc/php5/fpm/pool.d/www.conf \
     #|| gsn_lib_error "Unable to change php5-fpm listen socket, exit status = " $?
+    
+    # duplicating sock and load balance them instead of increasing max-children (commented out above)
+    # sock tends to fail, having multiple sock decrease failure rate
+    cp /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www2.conf
+    cp /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www3.conf
+    cp /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www4.conf
+    sed -i "s'listen = /var/run/php5-fpm.sock'/var/run/php5-fpm.sock2'" /etc/php5/fpm/pool.d/www2.conf
+    sed -i "s'listen = /var/run/php5-fpm.sock'/var/run/php5-fpm.sock3'" /etc/php5/fpm/pool.d/www3.conf
+    sed -i "s'listen = /var/run/php5-fpm.sock'/var/run/php5-fpm.sock4'" /etc/php5/fpm/pool.d/www4.conf
+    
+    
 
     #gsn_lib_echo "Downloading GeoIP Database, please wait..."
     #mkdir -p /usr/share/GeoIP
