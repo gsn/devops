@@ -67,7 +67,7 @@ function gsn_setup_php()
     if [ -f /etc/php5/mods-available/opcache.ini ]; then
       grep memory_consumption /etc/php5/mods-available/opcache.ini &> /dev/null
       if [ $? -ne 0 ]; then
-        sed -i "s/zend_extension=opcache.so/zend_extension=opcache.so\nopcache.memory_consumption=128\nopcache.max_accelerated_files=4000\nopcache.revalidate_freq=240/" /etc/php5/mods-available/opcache.ini \
+        sed -i "s/zend_extension=opcache.so/zend_extension=opcache.so\nopcache.memory_consumption=128\nopcache.max_accelerated_files=4000\nopcache.revalidate_freq=60/" /etc/php5/mods-available/opcache.ini \
         || gsn_lib_error "Unable to change opcache.memory_consumption, exit status = " $?
       fi
     fi
